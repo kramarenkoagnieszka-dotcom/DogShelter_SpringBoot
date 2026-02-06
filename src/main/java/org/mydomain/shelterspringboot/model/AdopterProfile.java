@@ -1,0 +1,80 @@
+package org.mydomain.shelterspringboot.model;
+
+public class AdopterProfile {
+    private Long id; // Dodane ID
+    private int energyLevel;
+    private boolean hasGarden;
+    private boolean hasCats;
+    private boolean hasDogs;
+    private boolean hasKids;
+
+    private double monthlyBudget;
+    private boolean willingForDisabledDog;
+
+    private boolean hadDogBefore;
+    private boolean hasBehavioralKnowledge;
+    private boolean willingForBehavioralIssues;
+
+    public AdopterProfile(Long id, int energyLevel, boolean hasGarden, boolean hasCats,
+                          boolean hasDogs, boolean hasKids, double monthlyBudget,
+                          boolean willingForDisabledDog, boolean hadDogBefore,
+                          boolean hasBehavioralKnowledge, boolean willingForBehavioralIssues) {
+        this.id = id;
+        this.energyLevel = energyLevel;
+        this.hasGarden = hasGarden;
+        this.hasCats = hasCats;
+        this.hasDogs = hasDogs;
+        this.hasKids = hasKids;
+        this.monthlyBudget = monthlyBudget;
+        this.willingForDisabledDog = willingForDisabledDog;
+        this.hadDogBefore = hadDogBefore;
+        this.hasBehavioralKnowledge = hasBehavioralKnowledge;
+        this.willingForBehavioralIssues = willingForBehavioralIssues;
+    }
+
+    protected AdopterProfile(){}
+
+    // GETTERY I SETTERY
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public int getEnergyLevel() { return energyLevel; }
+    public void setEnergyLevel(int energyLevel) { this.energyLevel = energyLevel; }
+
+    public boolean isHasGarden() { return hasGarden; }
+    public void setHasGarden(boolean hasGarden) { this.hasGarden = hasGarden; }
+
+    public boolean isHasCats() { return hasCats; }
+    public void setHasCats(boolean hasCats) { this.hasCats = hasCats; }
+
+    public boolean isHasDogs() { return hasDogs; }
+    public void setHasDogs(boolean hasDogs) { this.hasDogs = hasDogs; }
+
+    public boolean isHasKids() { return hasKids; }
+    public void setHasKids(boolean hasKids) { this.hasKids = hasKids; }
+
+    public double getMonthlyBudget() { return monthlyBudget; }
+    public void setMonthlyBudget(double monthlyBudget) { this.monthlyBudget = monthlyBudget; }
+
+    public boolean isWillingForDisabledDog() { return willingForDisabledDog; }
+    public void setWillingForDisabledDog(boolean willingForDisabledDog) { this.willingForDisabledDog = willingForDisabledDog; }
+
+    public boolean isHadDogBefore() { return hadDogBefore; }
+    public void setHadDogBefore(boolean hadDogBefore) { this.hadDogBefore = hadDogBefore; }
+
+    public boolean isHasBehavioralKnowledge() { return hasBehavioralKnowledge; }
+    public void setHasBehavioralKnowledge(boolean hasBehavioralKnowledge) { this.hasBehavioralKnowledge = hasBehavioralKnowledge; }
+
+    public boolean isWillingForBehavioralIssues() { return willingForBehavioralIssues; }
+    public void setWillingForBehavioralIssues(boolean willingForBehavioralIssues) { this.willingForBehavioralIssues = willingForBehavioralIssues; }
+
+    @Override
+    public String toString() {
+        return "AdopterProfile{" +
+                "id=" + id +
+                ", energyLevel=" + energyLevel +
+                ", hasGarden=" + hasGarden +
+                ", monthlyBudget=" + monthlyBudget +
+                '}';
+    }
+}
