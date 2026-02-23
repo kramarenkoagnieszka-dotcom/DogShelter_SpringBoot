@@ -22,10 +22,8 @@ public class Dog {
         this.expenseList = new ArrayList<>();
     }
 
-    // Konstruktor protected wymagany przez mechanizmy Spring/Hibernate
     protected Dog() {}
 
-    // GETTERY I SETTERY
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
