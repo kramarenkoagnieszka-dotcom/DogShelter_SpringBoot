@@ -1,19 +1,29 @@
 package org.mydomain.shelterspringboot.model;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "dogs")
 public class Dog {
-    private Long id; // zmiana z int na Long
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
     private int age;
     private String breed;
     private boolean isAdopted;
+
+    @OneToOne(cascade =  CascadeType.ALL)
+    @JoinColumn(name = "profile_id")
     private DogProfile profile;
+
+    @OneToMany(mappedBy = "dog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenseList;
 
-    public Dog(Long id, String name, int age, String breed, DogProfile profile) {
-        this.id = id;
+    public Dog(String name, int age, String breed, DogProfile profile) {
         this.name = name;
         this.age = age;
         this.breed = breed;
