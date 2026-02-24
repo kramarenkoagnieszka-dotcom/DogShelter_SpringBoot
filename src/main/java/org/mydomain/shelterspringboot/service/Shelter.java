@@ -10,11 +10,9 @@ import java.util.Optional;
 @Service
 public class Shelter {
     private List<Dog> dogs;
-    private Long dogSequence; // Licznik sekwencji ID
 
     public void createAndAddDog(String name, String breed, int age, DogProfile profile) {
-        dogSequence++;
-        Dog newDog = new Dog(dogSequence, name, age, breed, profile);
+        Dog newDog = new Dog(name, age, breed, profile);
         dogs.add(newDog);
     }
 

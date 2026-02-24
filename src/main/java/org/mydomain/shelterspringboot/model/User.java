@@ -2,7 +2,12 @@ package org.mydomain.shelterspringboot.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_type")
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
@@ -14,6 +19,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = Admin.class, name = "admin")
 })
 public abstract class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
     private String firstName;
@@ -21,8 +28,7 @@ public abstract class User {
     private String password;
     private String email;
 
-    public User(Long id, String firstName, String lastName, String username, String password, String email) {
-        this.id = id;
+    public User(String firstName, String lastName, String username, String password, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
