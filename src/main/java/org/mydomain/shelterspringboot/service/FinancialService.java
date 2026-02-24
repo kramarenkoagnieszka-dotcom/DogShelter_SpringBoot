@@ -27,10 +27,9 @@ public class FinancialService {
         Dog dog = shelter.findDogById(dogId)
                 .orElseThrow(() -> new IllegalArgumentException("Dog with ID " + dogId + " not found."));
 
-        Long transactionId = (long) expenses.size() + 5000;
         LocalDate today = LocalDate.now();
 
-        Expense newExpense = new Expense(transactionId, amount, today, description, dog, staff.getId());
+        Expense newExpense = new Expense(amount, today, description, dog, staff);
 
         addExpense(newExpense);
     }
