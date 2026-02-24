@@ -93,7 +93,7 @@ public class FinancialService {
 
     public List<Expense> getExpensesByStaff(Long staffId) {
         return expenses.stream()
-                .filter(e -> e.getStaffId().equals(staffId))
+                .filter(e -> e.getStaff() != null && e.getStaff().getId().equals(staffId))
                 .collect(Collectors.toList());
     }
 }

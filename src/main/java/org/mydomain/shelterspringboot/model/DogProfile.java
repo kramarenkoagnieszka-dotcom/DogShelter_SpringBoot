@@ -1,6 +1,14 @@
 package org.mydomain.shelterspringboot.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class DogProfile {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int energyLevel;
     private boolean needsGarden;
@@ -10,10 +18,9 @@ public class DogProfile {
     private boolean specialMedicalNeeds;
     private boolean specialBehavioralNeeds;
 
-    public DogProfile(Long id, int energyLevel, boolean needsGarden, boolean goodWithCats,
+    public DogProfile(int energyLevel, boolean needsGarden, boolean goodWithCats,
                       boolean goodWithDogs, boolean goodWithKids,
                       boolean specialMedicalNeeds, boolean specialBehavioralNeeds) {
-        this.id = id;
         this.energyLevel = energyLevel;
         this.needsGarden = needsGarden;
         this.goodWithCats = goodWithCats;
