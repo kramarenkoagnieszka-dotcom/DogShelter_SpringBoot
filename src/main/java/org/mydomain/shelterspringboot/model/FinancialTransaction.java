@@ -2,8 +2,13 @@ package org.mydomain.shelterspringboot.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import java.time.LocalDate;
+import jakarta.persistence.*;
 
+import java.time.LocalDate;
+@Entity
+@Table(name = "financial_transactions")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "transaction_type")
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
@@ -13,12 +18,13 @@ import java.time.LocalDate;
         @JsonSubTypes.Type(value = Donation.class, name = "donation")
 })
 public abstract class FinancialTransaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private double amount;
     private LocalDate date;
 
-    public FinancialTransaction(Long id, double amount, LocalDate date) {
-        this.id = id;
+    public FinancialTransaction(double amount, LocalDate date) {
         this.amount = amount;
         this.date = date;
     }
