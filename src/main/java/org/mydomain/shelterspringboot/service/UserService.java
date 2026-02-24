@@ -20,7 +20,7 @@ public class UserService {
         lastUserId++;
 
         User newUser = switch (roleChoice) {
-            case "1" -> new Staff(lastUserId, firstName, lastName, username, password, email);
+            case "1" -> new Staff(firstName, lastName, username, password, email);
             case "2" -> new Adopter(lastUserId, firstName, lastName, username, password, email);
             case "3" -> new Donor(lastUserId, firstName, lastName, username, password, email);
             case "4" -> new Admin(lastUserId, firstName, lastName, username, password, email);
