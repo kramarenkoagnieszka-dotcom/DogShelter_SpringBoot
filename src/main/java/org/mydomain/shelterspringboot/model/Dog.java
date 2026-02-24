@@ -2,6 +2,7 @@ package org.mydomain.shelterspringboot.model;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -52,7 +53,7 @@ public class Dog {
     public DogProfile getProfile() { return profile; }
     public void setProfile(DogProfile profile) { this.profile = profile; }
 
-    public List<Expense> getExpenses() { return expenseList; }
+    public List<Expense> getExpenses() { return Collections.unmodifiableList(expenseList); }
     public void setExpenses(List<Expense> expenseList) { this.expenseList = expenseList; }
 
     public void addExpense(Expense expense) {

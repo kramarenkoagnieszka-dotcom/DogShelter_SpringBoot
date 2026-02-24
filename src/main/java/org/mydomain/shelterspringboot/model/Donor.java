@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 @Entity
 @DiscriminatorValue("donor")
@@ -23,7 +24,7 @@ public class Donor extends User {
     }
 
     public List<Donation> getDonationHistory() {
-        return donationHistory;
+        return Collections.unmodifiableList(donationHistory);
     }
 
     public void setDonationHistory(List<Donation> donationHistory) {
