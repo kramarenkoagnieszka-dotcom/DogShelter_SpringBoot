@@ -1,12 +1,20 @@
 package org.mydomain.shelterspringboot.model;
 
-import java.time.LocalDate;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
+import java.time.LocalDate;
+@Entity
+@DiscriminatorValue("donation")
 public class Donation extends FinancialTransaction {
+    @ManyToOne
+    @JoinColumn(name = "donor_id")
     private Donor donor;
 
-    public Donation(Long id, double amount, LocalDate date, Donor donor) {
-        super(id, amount, date);
+    public Donation( double amount, LocalDate date, Donor donor) {
+        super(amount, date);
         this.donor = donor;
     }
 

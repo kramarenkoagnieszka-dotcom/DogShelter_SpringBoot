@@ -40,10 +40,9 @@ public class FinancialService {
             throw new IllegalArgumentException("Donation amount must be greater than 0.");
         }
 
-        Long nextId = (long) donations.size() + 8000;
         LocalDate today = LocalDate.now();
 
-        Donation newDonation = new Donation(nextId, amount, today, donor);
+        Donation newDonation = new Donation(amount, today, donor);
 
         addDonation(newDonation);
     }
