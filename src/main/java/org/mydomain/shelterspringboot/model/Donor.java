@@ -1,13 +1,20 @@
 package org.mydomain.shelterspringboot.model;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+
 import java.util.ArrayList;
 import java.util.List;
-
+@Entity
+@DiscriminatorValue("donor")
 public class Donor extends User {
-    private List<Donation> donationHistory;
+    @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Donation> donationHistory = new ArrayList<>();
 
-    public Donor(Long id, String firstName, String lastName, String username, String password, String email) {
-        super(id, firstName, lastName, username, password, email);
+    public Donor(String firstName, String lastName, String username, String password, String email) {
+        super(firstName, lastName, username, password, email);
         this.donationHistory = new ArrayList<>();
     }
 
@@ -24,9 +31,7 @@ public class Donor extends User {
     }
 
     public void addDonation(Donation donation) {
-        if (this.donationHistory == null) {
-            this.donationHistory = new ArrayList<>();
-        }
         this.donationHistory.add(donation);
+        donation.setDonor(this);
     }
 }

@@ -25,6 +25,6 @@ public class Donation extends FinancialTransaction {
         return String.format("Donation: %s - %.2f PLN (Donor: %s)",
                 this.getDate(),
                 this.getAmount(),
-                (donor != null ? donor.getName() : "Unknown"));
+                (donor != null ? donor.getUsername() : "Unknown"));
     }
 }

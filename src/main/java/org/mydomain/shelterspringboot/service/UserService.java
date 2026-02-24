@@ -11,19 +11,17 @@ import java.util.Optional;
 public class UserService {
 
     private List<User> users;
-    private Long lastUserId = 100L;
 
 
     public void createAndAddUser(String roleChoice, String firstName, String lastName,
                                  String username, String password, String email) {
 
-        lastUserId++;
 
         User newUser = switch (roleChoice) {
             case "1" -> new Staff(firstName, lastName, username, password, email);
-            case "2" -> new Adopter(lastUserId, firstName, lastName, username, password, email);
-            case "3" -> new Donor(lastUserId, firstName, lastName, username, password, email);
-            case "4" -> new Admin(lastUserId, firstName, lastName, username, password, email);
+            case "2" -> new Adopter(firstName, lastName, username, password, email);
+            case "3" -> new Donor(firstName, lastName, username, password, email);
+            case "4" -> new Admin(firstName, lastName, username, password, email);
             default -> throw new IllegalArgumentException("Invalid role selected: " + roleChoice);
         };
 
