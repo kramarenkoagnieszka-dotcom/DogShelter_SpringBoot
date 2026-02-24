@@ -4,35 +4,38 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-
 import java.time.LocalDate;
+
 @Entity
 @DiscriminatorValue("donation")
 public class Donation extends FinancialTransaction {
+
     @ManyToOne
-    @JoinColumn(name = "donor_id")
-    private Donor donor;
+    @JoinColumn(name = "user_id") // Zmieniono z donor_id na user_id dla jasności
+    private User user;
 
-    public Donation( double amount, LocalDate date, Donor donor) {
+    public Donation(double amount, LocalDate date, User user) {
         super(amount, date);
-        this.donor = donor;
+        this.user = user;
     }
 
-    protected Donation() {}
-
-    public Donor getDonor() {
-        return donor;
+    protected Donation() {
+        super();
     }
 
-    public void setDonor(Donor donor) {
-        this.donor = donor;
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
     public String toString() {
-        return String.format("Donation: %s - %.2f PLN (Donor: %s)",
+        return String.format("Donation: %s - %.2f PLN (User: %s)",
                 this.getDate(),
                 this.getAmount(),
-                (donor != null ? donor.getUsername() : "Unknown"));
+                (user != null ? user.getUsername() : "Unknown"));
     }
 }

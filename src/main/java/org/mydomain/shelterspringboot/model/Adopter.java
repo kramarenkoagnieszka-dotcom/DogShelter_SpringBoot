@@ -1,19 +1,27 @@
 package org.mydomain.shelterspringboot.model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-public class Adopter extends User {
+@Entity
+@DiscriminatorValue("adopter")
+public class Adopter extends User implements Donatable {
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_id")
     private AdopterProfile profile;
-    private List<Donation> donationHistory;
 
-    public Adopter(Long id, String firstName, String lastName, String username, String password, String email) {
-        super(id, firstName, lastName, username, password, email);
+    @OneToMany(mappedBy = "adopter", cascade = CascadeType.ALL)
+    private List<Donation> donationHistory = new ArrayList<>();
+
+    public Adopter(String firstName, String lastName, String username, String password, String email) {
+        super(firstName, lastName, username, password, email);
         this.donationHistory = new ArrayList<>();
     }
 
-    public Adopter(Long id, String firstName, String lastName, String username, String password, String email, AdopterProfile profile) {
-        super(id, firstName, lastName, username, password, email);
+    public Adopter(String firstName, String lastName, String username, String password, String email, AdopterProfile profile) {
+        super(firstName, lastName, username, password, email);
         this.profile = profile;
         this.donationHistory = new ArrayList<>();
     }
@@ -23,15 +31,13 @@ public class Adopter extends User {
     }
 
     public AdopterProfile getProfile() { return profile; }
-    public List<Donation> getDonationHistory() { return donationHistory; }
+    public List<Donation> getDonationHistory() {return Collections.unmodifiableList(donationHistory);}
 
     public void setProfile(AdopterProfile profile) { this.profile = profile; }
-    public void setDonationHistory(List<Donation> donationHistory) { this.donationHistory = donationHistory; }
+
 
     public void addDonation(Donation donation) {
-        if (this.donationHistory == null) {
-            this.donationHistory = new ArrayList<>();
-        }
         this.donationHistory.add(donation);
+        donation.setUser(this);
     }
 }

@@ -60,16 +60,19 @@ public class FinancialService {
     }
 
     public void addDonation(Donation donation) {
-        userService.findUserById(donation.getDonor().getId()).ifPresentOrElse(user -> {
-            if (user instanceof Donor donor) {
+        User user = donation.getUser();
+        if (user == null) throw new IllegalArgumentException("Donation must have a user.");
+
+        userService.findUserById(user.getId()).ifPresentOrElse(foundUser -> {
+            if (foundUser instanceof Donatable donatable) {
                 donations.add(donation);
                 balance += donation.getAmount();
-                donor.getDonationHistory().add(donation);
+                donatable.addDonation(donation);
             } else {
-                throw new IllegalArgumentException("User with ID " + donation.getDonor().getId() + " is not a Donor.");
+                throw new IllegalArgumentException("This user type cannot make donations.");
             }
         }, () -> {
-            throw new IllegalArgumentException("Donor with ID " + donation.getDonor().getId() + " not found.");
+            throw new IllegalArgumentException("User not found.");
         });
     }
 

@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 @Entity
 @DiscriminatorValue("donor")
-public class Donor extends User {
+public class Donor extends User implements Donatable {
     @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Donation> donationHistory = new ArrayList<>();
 
@@ -33,6 +33,6 @@ public class Donor extends User {
 
     public void addDonation(Donation donation) {
         this.donationHistory.add(donation);
-        donation.setDonor(this);
+        donation.setUser(this);
     }
 }
