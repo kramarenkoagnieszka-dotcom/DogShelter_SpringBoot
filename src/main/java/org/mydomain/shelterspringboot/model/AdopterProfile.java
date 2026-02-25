@@ -1,7 +1,15 @@
 package org.mydomain.shelterspringboot.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class AdopterProfile {
-    private Long id; // Dodane ID
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private int energyLevel;
     private boolean hasGarden;
     private boolean hasCats;
@@ -15,11 +23,10 @@ public class AdopterProfile {
     private boolean hasBehavioralKnowledge;
     private boolean willingForBehavioralIssues;
 
-    public AdopterProfile(Long id, int energyLevel, boolean hasGarden, boolean hasCats,
+    public AdopterProfile(int energyLevel, boolean hasGarden, boolean hasCats,
                           boolean hasDogs, boolean hasKids, double monthlyBudget,
                           boolean willingForDisabledDog, boolean hadDogBefore,
                           boolean hasBehavioralKnowledge, boolean willingForBehavioralIssues) {
-        this.id = id;
         this.energyLevel = energyLevel;
         this.hasGarden = hasGarden;
         this.hasCats = hasCats;
@@ -34,7 +41,6 @@ public class AdopterProfile {
 
     protected AdopterProfile(){}
 
-    // GETTERY I SETTERY
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

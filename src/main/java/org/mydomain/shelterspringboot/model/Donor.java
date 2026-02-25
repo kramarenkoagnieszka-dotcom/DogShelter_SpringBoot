@@ -27,10 +27,6 @@ public class Donor extends User implements Donatable {
         return Collections.unmodifiableList(donationHistory);
     }
 
-    public void setDonationHistory(List<Donation> donationHistory) {
-        this.donationHistory = donationHistory;
-    }
-
     public void addDonation(Donation donation) {
         this.donationHistory.add(donation);
         donation.setUser(this);

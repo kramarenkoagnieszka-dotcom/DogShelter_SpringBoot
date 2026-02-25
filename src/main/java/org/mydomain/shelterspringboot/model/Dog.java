@@ -54,7 +54,6 @@ public class Dog {
     public void setProfile(DogProfile profile) { this.profile = profile; }
 
     public List<Expense> getExpenses() { return Collections.unmodifiableList(expenseList); }
-    public void setExpenses(List<Expense> expenseList) { this.expenseList = expenseList; }
 
     public void addExpense(Expense expense) {
         if (this.expenseList == null) {

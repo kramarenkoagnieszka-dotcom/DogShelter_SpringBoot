@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class AdoptionApplication {
-    private Long id; // Zmiana na Long
+    private Long id;
     private Dog dog;
     private Adopter adopter;
     private LocalDateTime applicationDate;
@@ -32,7 +32,6 @@ public class AdoptionApplication {
         REJECTED
     }
 
-    // GETTERY
     public Long getId() { return id; }
     public Dog getDog() { return dog; }
     public Adopter getAdopter() { return adopter; }
@@ -41,7 +40,6 @@ public class AdoptionApplication {
     public double getMatchPercentage() { return matchPercentage; }
     public String getNotes() { return notes; }
 
-    // SETTERY
     public void setId(Long id) { this.id = id; }
     public void setDog(Dog dog) { this.dog = dog; }
     public void setAdopter(Adopter adopter) { this.adopter = adopter; }
