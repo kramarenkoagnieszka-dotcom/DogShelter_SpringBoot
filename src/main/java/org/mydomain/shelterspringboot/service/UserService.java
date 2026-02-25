@@ -40,10 +40,6 @@ public class UserService {
         }
 
         users.add(newUser);
-
-        if (newUser.getId() > lastUserId) {
-            lastUserId = newUser.getId();
-        }
     }
 
     public User login(String username, String password) {

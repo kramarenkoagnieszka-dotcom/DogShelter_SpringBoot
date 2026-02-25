@@ -12,8 +12,8 @@ public class AdoptionApplication {
     @ManyToOne
     @JoinColumn(name = "dog_id")
     private Dog dog;
-    @JoinColumn(name = "dog_id")
     @ManyToOne
+    @JoinColumn(name = "adopter_id")
     private Adopter adopter;
     private LocalDateTime applicationDate;
     @Enumerated(EnumType.STRING)

@@ -12,7 +12,7 @@ public class Adopter extends User implements Donatable {
     @JoinColumn(name = "profile_id")
     private AdopterProfile profile;
 
-    @OneToMany(mappedBy = "adopter", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Donation> donationHistory = new ArrayList<>();
 
     public Adopter(String firstName, String lastName, String username, String password, String email) {

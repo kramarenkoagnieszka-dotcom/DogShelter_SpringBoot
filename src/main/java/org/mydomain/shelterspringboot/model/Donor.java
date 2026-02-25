@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("donor")
 public class Donor extends User implements Donatable {
-    @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Donation> donationHistory = new ArrayList<>();
 
     public Donor(String firstName, String lastName, String username, String password, String email) {

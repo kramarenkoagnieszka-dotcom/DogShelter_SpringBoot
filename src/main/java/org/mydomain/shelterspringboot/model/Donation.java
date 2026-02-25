@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class Donation extends FinancialTransaction {
 
     @ManyToOne
-    @JoinColumn(name = "user_id") // Zmieniono z donor_id na user_id dla jasności
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Donation(double amount, LocalDate date, User user) {
