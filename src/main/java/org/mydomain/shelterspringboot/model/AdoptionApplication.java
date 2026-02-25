@@ -1,21 +1,29 @@
 package org.mydomain.shelterspringboot.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
+@Entity
 public class AdoptionApplication {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
+    @JoinColumn(name = "dog_id")
     private Dog dog;
+    @JoinColumn(name = "dog_id")
+    @ManyToOne
     private Adopter adopter;
     private LocalDateTime applicationDate;
+    @Enumerated(EnumType.STRING)
     private ApplicationStatus status;
     private double matchPercentage;
     private String notes;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public AdoptionApplication(Long id, Dog dog, Adopter adopter, double matchPercentage, String notes) {
-        this.id = id;
+    public AdoptionApplication(Dog dog, Adopter adopter, double matchPercentage, String notes) {
         this.dog = dog;
         this.adopter = adopter;
         this.matchPercentage = matchPercentage;

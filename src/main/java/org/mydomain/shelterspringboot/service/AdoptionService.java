@@ -39,9 +39,8 @@ public class AdoptionService {
                     + String.format("%.1f", match) + "%).");
         }
 
-        Long nextId = (long) (applications.size() + 2000);
 
-        AdoptionApplication app = new AdoptionApplication(nextId, dog, adopter, match, notes);
+        AdoptionApplication app = new AdoptionApplication(dog, adopter, match, notes);
         applications.add(app);
     }
 
