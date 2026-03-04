@@ -1,6 +1,6 @@
 package org.mydomain.shelterspringboot.service;
 
-import org.mydomain.shelterspringboot.model.*;
+import org.mydomain.shelterspringboot.model.User;
 import org.mydomain.shelterspringboot.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +22,10 @@ public class UserService {
         if (userRepository.existsByUsernameIgnoreCase(newUser.getUsername())) {
             throw new IllegalArgumentException("Username '" + newUser.getUsername() + "' is already taken.");
         }
+        if (userRepository.existsByEmail(newUser.getEmail())) {
+            throw new IllegalArgumentException("Email '" + newUser.getEmail() + "' is already registered.");
+        }
+
         userRepository.save(newUser);
     }
 
@@ -35,6 +39,18 @@ public class UserService {
 
     public Optional<User> findUserById(Long id) {
         return userRepository.findById(id);
+    }
+
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public List<User> searchByLastName(String lastNamePart) {
+        return userRepository.findByLastNameContainingIgnoreCase(lastNamePart);
     }
 
     public List<User> getAllUsers() {
