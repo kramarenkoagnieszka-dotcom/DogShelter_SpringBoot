@@ -1,9 +1,12 @@
 package org.mydomain.shelterspringboot.service;
 
+import jakarta.transaction.Transactional;
 import org.mydomain.shelterspringboot.model.*;
-import org.mydomain.shelterspringboot.repository.*;
+import org.mydomain.shelterspringboot.repository.DogRepository;
+import org.mydomain.shelterspringboot.repository.DonationRepository;
+import org.mydomain.shelterspringboot.repository.ExpenseRepository;
+import org.mydomain.shelterspringboot.repository.FinancialTransactionRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,42 +14,36 @@ import java.util.List;
 @Service
 public class FinancialService {
 
-    private final DonationRepository donationRepository;
-    private final ExpenseRepository expenseRepository;
     private final FinancialTransactionRepository transactionRepository;
+    private final ExpenseRepository expenseRepository;
+    private final DonationRepository donationRepository;
     private final DogRepository dogRepository;
 
-    public FinancialService(DonationRepository donationRepository,
+    public FinancialService(FinancialTransactionRepository transactionRepository,
                             ExpenseRepository expenseRepository,
-                            FinancialTransactionRepository transactionRepository,
+                            DonationRepository donationRepository,
                             DogRepository dogRepository) {
-        this.donationRepository = donationRepository;
-        this.expenseRepository = expenseRepository;
         this.transactionRepository = transactionRepository;
+        this.expenseRepository = expenseRepository;
+        this.donationRepository = donationRepository;
         this.dogRepository = dogRepository;
     }
 
     public double getBalance() {
-        double totalDonations = donationRepository.findAll().stream()
-                .mapToDouble(Donation::getAmount)
-                .sum();
-        double totalExpenses = expenseRepository.findAll().stream()
-                .mapToDouble(Expense::getAmount)
-                .sum();
-        return totalDonations - totalExpenses;
+        Double donations = transactionRepository.sumAllDonations();
+        Double expenses = transactionRepository.sumAllExpenses();
+        return (donations != null ? donations : 0.0) - (expenses != null ? expenses : 0.0);
     }
 
     @Transactional
     public void registerExpense(Staff staff, Long dogId, double amount, String description) {
         Dog dog = dogRepository.findById(dogId)
-                .orElseThrow(() -> new IllegalArgumentException("Dog with ID " + dogId + " not found."));
+                .orElseThrow(() -> new IllegalArgumentException("Dog not found."));
 
         if (amount > getBalance()) {
-            throw new IllegalArgumentException("Insufficient funds. Current balance: " + getBalance() + " PLN.");
+            throw new IllegalArgumentException("Insufficient funds.");
         }
-
-        Expense newExpense = new Expense(amount, LocalDate.now(), description, dog, staff);
-        expenseRepository.save(newExpense);
+        transactionRepository.save(new Expense(amount, LocalDate.now(), description, dog, staff));
     }
 
     @Transactional
@@ -54,34 +51,57 @@ public class FinancialService {
         if (amount <= 0) {
             throw new IllegalArgumentException("Donation amount must be greater than 0.");
         }
-
         if (!(user instanceof Donatable)) {
             throw new IllegalArgumentException("This user type cannot make donations.");
         }
 
-        Donation newDonation = new Donation(amount, LocalDate.now(), user);
-        donationRepository.save(newDonation);
+        transactionRepository.save(new Donation(amount, LocalDate.now(), user));
     }
 
-    public List<Expense> getAllExpenses() {
-        return expenseRepository.findAll();
+    public List<FinancialTransaction> getTransactionsByDate(LocalDate date) {
+        return transactionRepository.findByDate(date);
     }
 
-    public List<Donation> getAllDonations() {
-        return donationRepository.findAll();
+    public List<FinancialTransaction> getTransactionsInRange(LocalDate start, LocalDate end) {
+        return transactionRepository.findByDateBetween(start, end);
+    }
+
+    public List<FinancialTransaction> getLargeTransactions(double minAmount) {
+        return transactionRepository.findByAmountGreaterThanEqual(minAmount);
+    }
+
+    public List<FinancialTransaction> getRecentTransactions() {
+        return transactionRepository.findTop10ByOrderByDateDesc();
+    }
+    public List<Expense> getExpensesByDog(Dog dog) {
+        return expenseRepository.findByDog(dog);
     }
 
     public List<Expense> getExpensesByStaff(Staff staff) {
         return expenseRepository.findByStaff(staff);
     }
 
-    public double calculateTotalDonatedBy(User user) {
-        return donationRepository.findByUser(user).stream()
-                .mapToDouble(Donation::getAmount)
-                .sum();
+    public List<Expense> searchExpensesByDescription(String keyword) {
+        return expenseRepository.findByDescriptionContainingIgnoreCase(keyword);
+    }
+    public List<Donation> getDonationsByUser(User user) {
+        return donationRepository.findByUser(user);
     }
 
-    public List<FinancialTransaction> getRecentTransactions() {
-        return transactionRepository.findTop10ByOrderByDateDesc();
+    public List<Donation> getDonationHistoryByUser(User user) {
+        return donationRepository.findByUserOrderByDateDesc(user);
+    }
+
+    public List<Donation> getLargeDonations(double minAmount) {
+        return donationRepository.findByAmountGreaterThanEqual(minAmount);
+    }
+
+    public boolean hasUserDonated(User user) {
+        return donationRepository.existsByUser(user);
+    }
+
+    public double calculateTotalDonatedBy(User user) {
+        Double total = transactionRepository.sumDonationsByUserId(user.getId());
+        return total != null ? total : 0.0;
     }
 }
