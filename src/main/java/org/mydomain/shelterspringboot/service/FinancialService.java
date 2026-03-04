@@ -1,11 +1,12 @@
 package org.mydomain.shelterspringboot.service;
 
 import jakarta.transaction.Transactional;
-import org.mydomain.shelterspringboot.model.*;
-import org.mydomain.shelterspringboot.repository.DogRepository;
-import org.mydomain.shelterspringboot.repository.DonationRepository;
-import org.mydomain.shelterspringboot.repository.ExpenseRepository;
+import org.mydomain.shelterspringboot.model.FinancialTransaction;
+import org.mydomain.shelterspringboot.model.Staff;
+import org.mydomain.shelterspringboot.model.User;
 import org.mydomain.shelterspringboot.repository.FinancialTransactionRepository;
+import org.mydomain.shelterspringboot.service.DonationService;
+import org.mydomain.shelterspringboot.service.ExpenseService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,20 +14,16 @@ import java.util.List;
 
 @Service
 public class FinancialService {
-
     private final FinancialTransactionRepository transactionRepository;
-    private final ExpenseRepository expenseRepository;
-    private final DonationRepository donationRepository;
-    private final DogRepository dogRepository;
+    private final DonationService donationService;
+    private final ExpenseService expenseService;
 
     public FinancialService(FinancialTransactionRepository transactionRepository,
-                            ExpenseRepository expenseRepository,
-                            DonationRepository donationRepository,
-                            DogRepository dogRepository) {
+                            DonationService donationService,
+                            ExpenseService expenseService) {
         this.transactionRepository = transactionRepository;
-        this.expenseRepository = expenseRepository;
-        this.donationRepository = donationRepository;
-        this.dogRepository = dogRepository;
+        this.donationService = donationService;
+        this.expenseService = expenseService;
     }
 
     public double getBalance() {
@@ -36,26 +33,13 @@ public class FinancialService {
     }
 
     @Transactional
-    public void registerExpense(Staff staff, Long dogId, double amount, String description) {
-        Dog dog = dogRepository.findById(dogId)
-                .orElseThrow(() -> new IllegalArgumentException("Dog not found."));
-
-        if (amount > getBalance()) {
-            throw new IllegalArgumentException("Insufficient funds.");
-        }
-        transactionRepository.save(new Expense(amount, LocalDate.now(), description, dog, staff));
+    public void registerDonation(User user, double amount) {
+        donationService.registerDonation(user, amount);
     }
 
     @Transactional
-    public void registerDonation(User user, double amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Donation amount must be greater than 0.");
-        }
-        if (!(user instanceof Donatable)) {
-            throw new IllegalArgumentException("This user type cannot make donations.");
-        }
-
-        transactionRepository.save(new Donation(amount, LocalDate.now(), user));
+    public void registerExpense(Staff staff, Long dogId, double amount, String description) {
+        expenseService.registerExpense(staff, dogId, amount, description, getBalance());
     }
 
     public List<FinancialTransaction> getTransactionsByDate(LocalDate date) {
@@ -72,36 +56,5 @@ public class FinancialService {
 
     public List<FinancialTransaction> getRecentTransactions() {
         return transactionRepository.findTop10ByOrderByDateDesc();
-    }
-    public List<Expense> getExpensesByDog(Dog dog) {
-        return expenseRepository.findByDog(dog);
-    }
-
-    public List<Expense> getExpensesByStaff(Staff staff) {
-        return expenseRepository.findByStaff(staff);
-    }
-
-    public List<Expense> searchExpensesByDescription(String keyword) {
-        return expenseRepository.findByDescriptionContainingIgnoreCase(keyword);
-    }
-    public List<Donation> getDonationsByUser(User user) {
-        return donationRepository.findByUser(user);
-    }
-
-    public List<Donation> getDonationHistoryByUser(User user) {
-        return donationRepository.findByUserOrderByDateDesc(user);
-    }
-
-    public List<Donation> getLargeDonations(double minAmount) {
-        return donationRepository.findByAmountGreaterThanEqual(minAmount);
-    }
-
-    public boolean hasUserDonated(User user) {
-        return donationRepository.existsByUser(user);
-    }
-
-    public double calculateTotalDonatedBy(User user) {
-        Double total = transactionRepository.sumDonationsByUserId(user.getId());
-        return total != null ? total : 0.0;
     }
 }
