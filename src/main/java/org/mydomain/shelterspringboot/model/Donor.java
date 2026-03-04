@@ -11,24 +11,11 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("donor")
 public class Donor extends User implements Donatable {
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Donation> donationHistory = new ArrayList<>();
-
     public Donor(String firstName, String lastName, String username, String password, String email) {
         super(firstName, lastName, username, password, email);
-        this.donationHistory = new ArrayList<>();
     }
 
     protected Donor() {
         super();
-    }
-
-    public List<Donation> getDonationHistory() {
-        return Collections.unmodifiableList(donationHistory);
-    }
-
-    public void addDonation(Donation donation) {
-        this.donationHistory.add(donation);
-        donation.setUser(this);
     }
 }

@@ -1,102 +1,87 @@
 package org.mydomain.shelterspringboot.service;
 
 import org.mydomain.shelterspringboot.model.*;
+import org.mydomain.shelterspringboot.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FinancialService {
-    private List<Expense> expenses = new ArrayList<>();
-    private List<Donation> donations = new ArrayList<>();
-    private double balance = 0.0;
-    private final Shelter shelter;
-    private final UserService userService;
 
+    private final DonationRepository donationRepository;
+    private final ExpenseRepository expenseRepository;
+    private final FinancialTransactionRepository transactionRepository;
+    private final DogRepository dogRepository;
 
-    public FinancialService(Shelter shelter, UserService userService) {
-        this.shelter = shelter;
-        this.userService = userService;
+    public FinancialService(DonationRepository donationRepository,
+                            ExpenseRepository expenseRepository,
+                            FinancialTransactionRepository transactionRepository,
+                            DogRepository dogRepository) {
+        this.donationRepository = donationRepository;
+        this.expenseRepository = expenseRepository;
+        this.transactionRepository = transactionRepository;
+        this.dogRepository = dogRepository;
     }
 
+    public double getBalance() {
+        double totalDonations = donationRepository.findAll().stream()
+                .mapToDouble(Donation::getAmount)
+                .sum();
+        double totalExpenses = expenseRepository.findAll().stream()
+                .mapToDouble(Expense::getAmount)
+                .sum();
+        return totalDonations - totalExpenses;
+    }
 
-    public void registerExpense(Staff staff, long dogId, double amount, String description) {
-        Dog dog = shelter.findDogById(dogId)
+    @Transactional
+    public void registerExpense(Staff staff, Long dogId, double amount, String description) {
+        Dog dog = dogRepository.findById(dogId)
                 .orElseThrow(() -> new IllegalArgumentException("Dog with ID " + dogId + " not found."));
 
-        LocalDate today = LocalDate.now();
+        if (amount > getBalance()) {
+            throw new IllegalArgumentException("Insufficient funds. Current balance: " + getBalance() + " PLN.");
+        }
 
-        Expense newExpense = new Expense(amount, today, description, dog, staff);
-
-        addExpense(newExpense);
+        Expense newExpense = new Expense(amount, LocalDate.now(), description, dog, staff);
+        expenseRepository.save(newExpense);
     }
 
-    public void registerDonation(Donor donor, double amount) {
+    @Transactional
+    public void registerDonation(User user, double amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Donation amount must be greater than 0.");
         }
 
-        LocalDate today = LocalDate.now();
-
-        Donation newDonation = new Donation(amount, today, donor);
-
-        addDonation(newDonation);
-    }
-
-    public void addExpense(Expense expense) {
-        if (expense.getAmount() > balance) {
-            throw new IllegalArgumentException("Insufficient funds. Current balance: " + balance + " PLN.");
+        if (!(user instanceof Donatable)) {
+            throw new IllegalArgumentException("This user type cannot make donations.");
         }
 
-        expenses.add(expense);
-        balance -= expense.getAmount();
-
-        shelter.findDogById(expense.getDog().getId()).ifPresent(dog -> {
-            dog.addExpense(expense);
-        });
-    }
-
-    public void addDonation(Donation donation) {
-        User user = donation.getUser();
-        if (user == null) throw new IllegalArgumentException("Donation must have a user.");
-
-        userService.findUserById(user.getId()).ifPresentOrElse(foundUser -> {
-            if (foundUser instanceof Donatable donatable) {
-                donations.add(donation);
-                balance += donation.getAmount();
-                donatable.addDonation(donation);
-            } else {
-                throw new IllegalArgumentException("This user type cannot make donations.");
-            }
-        }, () -> {
-            throw new IllegalArgumentException("User not found.");
-        });
-    }
-
-    public double getBalance() {
-        return balance;
+        Donation newDonation = new Donation(amount, LocalDate.now(), user);
+        donationRepository.save(newDonation);
     }
 
     public List<Expense> getAllExpenses() {
-        return new ArrayList<>(expenses);
+        return expenseRepository.findAll();
     }
 
     public List<Donation> getAllDonations() {
-        return new ArrayList<>(donations);
+        return donationRepository.findAll();
     }
 
-    public double calculateTotalDonatedBy(Donor donor) {
-        return donor.getDonationHistory().stream()
+    public List<Expense> getExpensesByStaff(Staff staff) {
+        return expenseRepository.findByStaff(staff);
+    }
+
+    public double calculateTotalDonatedBy(User user) {
+        return donationRepository.findByUser(user).stream()
                 .mapToDouble(Donation::getAmount)
                 .sum();
     }
 
-    public List<Expense> getExpensesByStaff(Long staffId) {
-        return expenses.stream()
-                .filter(e -> e.getStaff() != null && e.getStaff().getId().equals(staffId))
-                .collect(Collectors.toList());
+    public List<FinancialTransaction> getRecentTransactions() {
+        return transactionRepository.findTop10ByOrderByDateDesc();
     }
 }
