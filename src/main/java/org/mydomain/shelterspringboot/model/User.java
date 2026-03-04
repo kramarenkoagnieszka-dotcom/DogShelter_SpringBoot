@@ -14,7 +14,6 @@ import jakarta.persistence.*;
         property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Staff.class, name = "staff"),
-        @JsonSubTypes.Type(value = Donor.class, name = "donor"),
         @JsonSubTypes.Type(value = Adopter.class, name = "adopter"),
         @JsonSubTypes.Type(value = Admin.class, name = "admin")
 })
