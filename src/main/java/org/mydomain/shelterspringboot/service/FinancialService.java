@@ -5,8 +5,6 @@ import org.mydomain.shelterspringboot.model.FinancialTransaction;
 import org.mydomain.shelterspringboot.model.Staff;
 import org.mydomain.shelterspringboot.model.User;
 import org.mydomain.shelterspringboot.repository.FinancialTransactionRepository;
-import org.mydomain.shelterspringboot.service.DonationService;
-import org.mydomain.shelterspringboot.service.ExpenseService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
