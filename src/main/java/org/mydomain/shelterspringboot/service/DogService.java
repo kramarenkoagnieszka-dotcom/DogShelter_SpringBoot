@@ -27,6 +27,19 @@ public class DogService {
         Dog newDog = new Dog(name, age, breed, profile);
         dogRepository.save(newDog);
     }
+    @Transactional
+    public void createAndAddDog(String name, String breed, int age) {
+        Dog newDog = new Dog(name, age, breed, new DogProfile());
+        dogRepository.save(newDog);
+    }
+
+    @Transactional
+    public void addProfileToDog(Long dogId, DogProfile profile) {
+        Dog dog = dogRepository.findById(dogId)
+                .orElseThrow(() -> new IllegalArgumentException("Dog with ID " + dogId + " not found"));
+        dog.setProfile(profile);
+        dogRepository.save(dog);
+    }
 
     public Optional<Dog> findDogById(Long dogId) {
         return dogRepository.findById(dogId);

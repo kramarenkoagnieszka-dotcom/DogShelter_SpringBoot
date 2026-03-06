@@ -2,6 +2,7 @@ package org.mydomain.shelterspringboot.controller;
 
 import jakarta.validation.Valid;
 import org.mydomain.shelterspringboot.model.Dog;
+import org.mydomain.shelterspringboot.model.DogProfile;
 import org.mydomain.shelterspringboot.service.DogService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,12 @@ public class DogController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addDog(@Valid @RequestBody Dog dog) {
         dogService.addDog(dog);
+    }
+
+    @PatchMapping("/{id}/profile")
+    public ResponseEntity<String> addProfileToDog(@PathVariable Long id, @Valid @RequestBody DogProfile profile) {
+        dogService.addProfileToDog(id, profile);
+        return ResponseEntity.ok("Profile added to dog with ID: " + id);
     }
 
     @GetMapping

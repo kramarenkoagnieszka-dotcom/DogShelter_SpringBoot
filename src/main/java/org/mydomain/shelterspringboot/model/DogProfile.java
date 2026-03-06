@@ -15,7 +15,7 @@ public class DogProfile {
 
     @Min(value = 1, message = "Energy level must be graded in 1-5 scale")
     @Max(value = 5, message = "Energy level must be graded in 1-5 scale")
-    private int energyLevel;
+    private int energyLevel = 1;
 
     private boolean needsGarden;
     private boolean goodWithCats;
@@ -36,7 +36,7 @@ public class DogProfile {
         this.specialBehavioralNeeds = specialBehavioralNeeds;
     }
 
-    protected DogProfile(){}
+    public DogProfile(){}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
