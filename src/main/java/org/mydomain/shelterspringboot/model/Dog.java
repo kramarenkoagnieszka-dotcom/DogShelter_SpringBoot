@@ -1,6 +1,8 @@
 package org.mydomain.shelterspringboot.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,8 +14,14 @@ public class Dog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Name can not be empty")
     private String name;
+
+    @Min(value = 0, message = "Age can not be less than 0")
+    @Max(value = 35, message = "This age does not seem possible")
     private int age;
+
+    @NotBlank(message = "Breed can not be empty")
     private String breed;
     private boolean isAdopted;
 

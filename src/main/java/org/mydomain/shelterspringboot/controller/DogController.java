@@ -1,5 +1,6 @@
 package org.mydomain.shelterspringboot.controller;
 
+import jakarta.validation.Valid;
 import org.mydomain.shelterspringboot.model.Dog;
 import org.mydomain.shelterspringboot.service.DogService;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class DogController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addDog(@RequestBody Dog dog) {
+    public void addDog(@Valid @RequestBody Dog dog) {
         dogService.addDog(dog);
     }
 
