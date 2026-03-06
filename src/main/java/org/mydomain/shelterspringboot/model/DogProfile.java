@@ -4,13 +4,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity
 public class DogProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Min(value = 1, message = "Energy level must be graded in 1-5 scale")
+    @Max(value = 5, message = "Energy level must be graded in 1-5 scale")
     private int energyLevel;
+
     private boolean needsGarden;
     private boolean goodWithCats;
     private boolean goodWithDogs;

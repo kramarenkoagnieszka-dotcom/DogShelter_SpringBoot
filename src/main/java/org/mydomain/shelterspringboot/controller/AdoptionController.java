@@ -1,5 +1,6 @@
 package org.mydomain.shelterspringboot.controller;
 
+import jakarta.validation.Valid;
 import org.mydomain.shelterspringboot.model.Adopter;
 import org.mydomain.shelterspringboot.model.AdoptionApplication;
 import org.mydomain.shelterspringboot.service.AdoptionService;
@@ -22,7 +23,7 @@ public class AdoptionController {
     }
 
     @PostMapping("/request")
-    public ResponseEntity<String> processRequest(@RequestBody Adopter adopter,
+    public ResponseEntity<String> processRequest(@Valid @RequestBody Adopter adopter,
                                                  @RequestParam Long dogId,
                                                  @RequestParam String notes) {
         try {

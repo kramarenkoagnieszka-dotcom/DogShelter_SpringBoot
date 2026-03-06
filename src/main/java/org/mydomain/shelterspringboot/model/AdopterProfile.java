@@ -4,19 +4,27 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity
 public class AdopterProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Min(value = 1, message = "Energy level must be graded in 1-5 scale")
+    @Max(value = 5, message = "Energy level must be graded in 1-5 scale")
     private int energyLevel;
+
     private boolean hasGarden;
     private boolean hasCats;
     private boolean hasDogs;
     private boolean hasKids;
 
+    @Min(value = 50, message = "Minimum monthly budget for one dog is 50 EUR")
     private double monthlyBudget;
+
     private boolean willingForDisabledDog;
 
     private boolean hadDogBefore;
